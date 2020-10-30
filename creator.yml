@@ -57,4 +57,5 @@ run:
     set -e
     echo "${DIGEST}" >> ./image/digest
     echo "sha256:${DIGEST}" | tee ./image/image-id
+    rm -rf $(pwd)${CNB_CACHE_DIR}/*
     mv ${CNB_CACHE_DIR}/* $(pwd)${CNB_CACHE_DIR}
