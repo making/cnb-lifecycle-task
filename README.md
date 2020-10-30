@@ -12,7 +12,7 @@ resources:
 - name: repo
   type: git
   source:
-    uri: https://github.com/making/hello-servlet.git
+    uri: https://github.com/making/sample-java-app.git
 - name: builder
   type: docker-image
   source:
