@@ -11,6 +11,8 @@ params:
   DOCKER_IMAGE:
   DOCKER_USERNAME: ""
   DOCKER_PASSWORD: ""
+  USER_ID: 1000
+  GROUP_ID: 1000
   CNB_REGISTRY_AUTH: ""
 run:
   user: root

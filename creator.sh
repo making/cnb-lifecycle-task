@@ -1,6 +1,13 @@
 #!/bin/bash
 set -eo pipefail
 
+set +e
+CNB_USER=heroku
+(cat /etc/shadow | grep ${CNB_USER} > /dev/null) || {
+  CNB_USER=cnb
+}
+set -e
+
 export CNB_APP_DIR=/workspace
 export CNB_CACHE_DIR=/cache
 export CNB_LAYERS_DIR=/layers
@@ -23,13 +30,13 @@ if [ "${CNB_REGISTRY_AUTH}" = "" ];then
   export CNB_REGISTRY_AUTH="{\"$(echo ${DOCKER_IMAGE} | awk -F '/' '{print $1}')\":\"Basic $(echo -n ${DOCKER_USERNAME}:${DOCKER_PASSWORD} | base64)\"}"
 fi
 
-chown -R cnb:cnb ${CNB_APP_DIR}
-chown -R cnb:cnb ${CNB_LAYERS_DIR}
-chown -R cnb:cnb $(pwd)${CNB_LAYERS_DIR}
-chown -R cnb:cnb ${CNB_CACHE_DIR}
+chown -R ${USER_ID}:${GROUP_ID} ${CNB_APP_DIR}
+chown -R ${USER_ID}:${GROUP_ID} ${CNB_LAYERS_DIR}
+chown -R ${USER_ID}:${GROUP_ID} $(pwd)${CNB_LAYERS_DIR}
+chown -R ${USER_ID}:${GROUP_ID} ${CNB_CACHE_DIR}
 
 set -x
-su --preserve-environment -c "/lifecycle/creator ${DOCKER_IMAGE}" cnb | tee creator.log
+su --preserve-environment -c "/lifecycle/creator ${DOCKER_IMAGE}" ${CNB_USER} | tee creator.log
 set +x
 set +e
 DIGEST=$(grep ' Digest:' creator.log | grep 'Digest' | sed 's/.*Digest: sha256://')
